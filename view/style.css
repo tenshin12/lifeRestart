@@ -130,8 +130,10 @@ html {
     text-align: center;
 }
 
-a{
-    text-decoration: none;
+a,
+a:hover,
+a:visited {
+    color: white;
 }
 
 .judge,
