@@ -130,6 +130,10 @@ html {
     text-align: center;
 }
 
+a{
+    text-decoration: none;
+}
+
 .judge,
 .lifeTrajectory,
 .propinitial,

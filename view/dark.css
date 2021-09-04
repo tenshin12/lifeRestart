@@ -134,6 +134,10 @@ html {
     color: #EEEEEE;
 }
 
+a{
+    text-decoration: none;
+}
+
 .judge,
 .lifeTrajectory,
 .propinitial,

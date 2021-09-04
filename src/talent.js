@@ -92,7 +92,7 @@ class Talent {
                 if(!i && include) return include;
                 // const gradeRandom = Math.random();
                 let grade = 3;
-
+                // from http://restart.typekuon.com/lifeRestart/view/ Thanks!
                 while(talentList[grade].length == 0) grade--;
 
                 const length = talentList[grade].length;
