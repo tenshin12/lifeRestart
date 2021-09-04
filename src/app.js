@@ -46,6 +46,7 @@ class App{
                 人生重开模拟器<br>
                 <div style="font-size:1.5rem; font-weight:normal;">这垃圾人生一秒也不想呆了</div>
                 <div style="font-size:1.5rem; font-weight:normal;">&nbsp;</div>
+				<div style="font-size:1rem; font-weight:normal;"><a href="https://liferestart.syaro.io/view/">原版-></a></div>
 				<div style="font-size:1rem; font-weight:normal;"><a href="https://github.com/VickScarlet/lifeRestart">原作者Github-></a></div>
 				<div style="font-size:1rem; font-weight:normal;"><a href="https://github.com/SWERecker/lifeRestart">修改版Github-></a></div>
 				<div style="font-size:1rem; font-weight:normal;">此版本修改：限制10000初始属性<br>不强制全部使用+无限刷新天赋<br>可自选全部天赋</div>
