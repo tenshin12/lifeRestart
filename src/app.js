@@ -1,6 +1,6 @@
 import { max, sum } from './functions/util.js';
-import { summary } from './functions/summary.js'
-import Life from './life.js'
+import { summary } from './functions/summary.js';
+import Life from './life.js';
 class App{
     constructor(){
         this.#life = new Life();
@@ -41,18 +41,21 @@ class App{
         <div id="main">
             <div id="cnt" class="head">已重开1次</div>
             <button id="rank">排行榜</button>
+            <button id="themeToggleBtn">黑</button>
             <div id="title">
                 人生重开模拟器<br>
                 <div style="font-size:1.5rem; font-weight:normal;">这垃圾人生一秒也不想呆了</div>
                 <div style="font-size:1.5rem; font-weight:normal;">&nbsp;</div>
-                <div style="font-size:1rem; font-weight:normal;"><a href="https://github.com/VickScarlet/lifeRestart">原作者Github</a></div>
-                <div style="font-size:1rem; font-weight:normal;"><a href="https://github.com/SWERecker/lifeRestart">修改版Github</a></div>
-                <div style="font-size:1rem; font-weight:normal;">此版本修改：限制10000初始属性，不强制全部使用+无限刷新天赋</div>
+				<div style="font-size:1rem; font-weight:normal;"><a href="https://github.com/VickScarlet/lifeRestart">原作者Github</a></div>
+				<div style="font-size:1rem; font-weight:normal;"><a href="https://github.com/SWERecker/lifeRestart">修改版Github</a></div>
+				<div style="font-size:1rem; font-weight:normal;">此版本修改：限制10000初始属性<br>不强制全部使用+无限刷新天赋<br>可自选全部天赋</div>
             </div>
             <button id="restart" class="mainbtn"><span class="iconfont">&#xe6a7;</span>立即重开</button>
         </div>
         `);
-
+		// Init theme
+        this.setTheme(localStorage.getItem('theme'));
+        
         indexPage
             .find('#restart')
             .click(()=>this.switch('talent'));
@@ -61,12 +64,25 @@ class App{
             .find('#rank')
             .click(()=>this.hint('别卷了！没有排行榜'));
 
+        indexPage
+            .find("#themeToggleBtn")
+            .click(() => {
+                if(localStorage.getItem('theme') == 'light') {
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    localStorage.setItem('theme', 'light');
+                }
+
+                this.setTheme(localStorage.getItem('theme'))
+            });
+
         // Talent
         const talentPage = $(`
         <div id="main">
             <div class="head" style="font-size: 1.6rem">天赋抽卡</div>
             <ul id="talents" class="selectlist"></ul>
             <button id="random" class="mainbtn" style="top: 80%;">10连抽！</button>
+            <button id="listall" class="mainbtn showall">显示全部</button>
             <button id="next" class="mainbtn" style="top:auto; bottom:0.1em">请选择3个</button>
         </div>
         `);
@@ -81,6 +97,47 @@ class App{
                 const ul = talentPage.find('#talents');
                 ul.html('');
                 this.#life.talentRandom()
+                    .forEach(talent=>{
+                        const li = createTalent(talent);
+                        ul.append(li);
+                        this.#talentSelected.clear();
+                        li.click(()=>{
+                            if(li.hasClass('selected')) {
+                                li.removeClass('selected')
+                                this.#talentSelected.delete(talent);
+                            } else {
+                                if(this.#talentSelected.size==3) {
+                                    this.hint('只能选3个天赋');
+                                    return;
+                                }
+
+                                const exclusive = this.#life.exclusive(
+                                    Array.from(this.#talentSelected).map(({id})=>id),
+                                    talent.id
+                                );
+                                if(exclusive != null) {
+                                    for(const { name, id } of this.#talentSelected) {
+                                        if(id == exclusive) {
+                                            this.hint(`与已选择的天赋【${name}】冲突`);
+                                            return;
+                                        }
+                                    }
+                                    return;
+                                }
+                                li.addClass('selected');
+                                this.#talentSelected.add(talent);
+                            }
+                        });
+                    });
+            });
+
+        talentPage
+            .find('#listall')
+            .click(()=>{
+                const ul = talentPage.find('#talents');
+                talentPage.find('#random').hide();
+                ul.html('');
+                this.#life.talentAll()
                     .forEach(talent=>{
                         const li = createTalent(talent);
                         ul.append(li);
@@ -458,6 +515,16 @@ class App{
                 this.#hintTimeout = setTimeout(hideBanners, 3000);
             }
         });
+    }
+
+    setTheme(theme) {
+        const themeLink = $(document).find('#themeLink');
+
+        if(theme == 'light') {
+            themeLink.attr('href', 'style.css');
+        } else {
+            themeLink.attr('href', 'dark.css');
+        }
     }
 
     get times() {return JSON.parse(localStorage.times||'0') || 0;}
